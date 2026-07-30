@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"strings"
 )
 
@@ -33,13 +34,18 @@ func main() {
 	// CORS 中间件
 	handler := corsMiddleware(mux)
 
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+
 	fmt.Println("================================================")
 	fmt.Println("  NeoKr - 在线加解密工具站")
 	fmt.Println("  网站: https://neokr.com")
-	fmt.Println("  服务地址: http://localhost:8080")
+	fmt.Printf("  服务地址: http://0.0.0.0:%s\n", port)
 	fmt.Println("================================================")
 
-	if err := http.ListenAndServe(":8080", handler); err != nil {
+	if err := http.ListenAndServe(":"+port, handler); err != nil {
 		log.Fatal("服务器启动失败:", err)
 	}
 }
