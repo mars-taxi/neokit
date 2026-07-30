@@ -9,7 +9,7 @@ import {
   handleBase64Encode, handleBase64Decode,
   handleRSAGenerate, handleRSAEncrypt, handleRSADecrypt,
   jsonResponse, errorResponse
-} from '../_crypto.js';
+} from './_crypto.js';
 
 const CORS = {
   'Access-Control-Allow-Origin': '*',
@@ -19,6 +19,13 @@ const CORS = {
 
 export async function onRequest(context) {
   const { request } = context;
+  const url = new URL(request.url);
+  const path = url.pathname;
+
+  // 只处理 /api/* 路径，其他交给静态文件
+  if (!path.startsWith('/api/')) {
+    return context.next();
+  }
 
   if (request.method === 'OPTIONS') {
     return new Response(null, { status: 204, headers: CORS });
@@ -34,9 +41,6 @@ export async function onRequest(context) {
   } catch {
     return errorResponse('请求参数解析失败', 400);
   }
-
-  const url = new URL(request.url);
-  const path = url.pathname;
 
   const routes = {
     '/api/encrypt': handleEncrypt,
