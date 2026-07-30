@@ -1,12 +1,12 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
-	"strings"
+
+	"neokit/internal/crypto"
 )
 
 func main() {
@@ -18,18 +18,18 @@ func main() {
 	mux.HandleFunc("/", serveIndex)
 
 	// API 路由
-	mux.HandleFunc("/api/encrypt", handleEncrypt)
-	mux.HandleFunc("/api/decrypt", handleDecrypt)
-	mux.HandleFunc("/api/hash", handleHash)
-	mux.HandleFunc("/api/hmac", handleHMAC)
-	mux.HandleFunc("/api/generate-key", handleGenerateKey)
-	mux.HandleFunc("/api/generate-salt", handleGenerateSalt)
-	mux.HandleFunc("/api/generate-iv", handleGenerateIV)
-	mux.HandleFunc("/api/base64-encode", handleBase64Encode)
-	mux.HandleFunc("/api/base64-decode", handleBase64Decode)
-	mux.HandleFunc("/api/rsa-generate", handleRSAGenerate)
-	mux.HandleFunc("/api/rsa-encrypt", handleRSAEncrypt)
-	mux.HandleFunc("/api/rsa-decrypt", handleRSADecrypt)
+	mux.HandleFunc("/api/encrypt", crypto.HandleEncrypt)
+	mux.HandleFunc("/api/decrypt", crypto.HandleDecrypt)
+	mux.HandleFunc("/api/hash", crypto.HandleHash)
+	mux.HandleFunc("/api/hmac", crypto.HandleHMAC)
+	mux.HandleFunc("/api/generate-key", crypto.HandleGenerateKey)
+	mux.HandleFunc("/api/generate-salt", crypto.HandleGenerateSalt)
+	mux.HandleFunc("/api/generate-iv", crypto.HandleGenerateIV)
+	mux.HandleFunc("/api/base64-encode", crypto.HandleBase64Encode)
+	mux.HandleFunc("/api/base64-decode", crypto.HandleBase64Decode)
+	mux.HandleFunc("/api/rsa-generate", crypto.HandleRSAGenerate)
+	mux.HandleFunc("/api/rsa-encrypt", crypto.HandleRSAEncrypt)
+	mux.HandleFunc("/api/rsa-decrypt", crypto.HandleRSADecrypt)
 
 	// CORS 中间件
 	handler := corsMiddleware(mux)
@@ -69,24 +69,4 @@ func corsMiddleware(next http.Handler) http.Handler {
 		}
 		next.ServeHTTP(w, r)
 	})
-}
-
-func writeJSON(w http.ResponseWriter, data interface{}) {
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(data)
-}
-
-func writeError(w http.ResponseWriter, errMsg string, status int) {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(status)
-	json.NewEncoder(w).Encode(map[string]string{"error": errMsg})
-}
-
-func parseJSON(r *http.Request, v interface{}) error {
-	defer r.Body.Close()
-	return json.NewDecoder(r.Body).Decode(v)
-}
-
-func trimSpace(s string) string {
-	return strings.TrimSpace(s)
 }
