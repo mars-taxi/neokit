@@ -12,9 +12,7 @@ import (
 func main() {
 	mux := http.NewServeMux()
 
-	// 静态文件服务
-	fs := http.FileServer(http.Dir("api/public"))
-	mux.Handle("/public/", http.StripPrefix("/public/", fs))
+	// 首页
 	mux.HandleFunc("/", serveIndex)
 
 	// API 路由
@@ -55,7 +53,7 @@ func serveIndex(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
 		return
 	}
-	http.ServeFile(w, r, "api/public/index.html")
+	http.ServeFile(w, r, "index.html")
 }
 
 func corsMiddleware(next http.Handler) http.Handler {
