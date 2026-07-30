@@ -1,0 +1,15 @@
+# Binary
+neokit.exe
+neokit
+
+# IDE
+.idea/
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Go
+*.test
+*.out
