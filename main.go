@@ -13,8 +13,8 @@ func main() {
 	mux := http.NewServeMux()
 
 	// 静态文件服务
-	fs := http.FileServer(http.Dir("static"))
-	mux.Handle("/static/", http.StripPrefix("/static/", fs))
+	fs := http.FileServer(http.Dir("public"))
+	mux.Handle("/public/", http.StripPrefix("/public/", fs))
 	mux.HandleFunc("/", serveIndex)
 
 	// API 路由
@@ -55,7 +55,7 @@ func serveIndex(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
 		return
 	}
-	http.ServeFile(w, r, "static/index.html")
+	http.ServeFile(w, r, "public/index.html")
 }
 
 func corsMiddleware(next http.Handler) http.Handler {

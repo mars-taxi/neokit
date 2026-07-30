@@ -14,7 +14,7 @@ FROM alpine:3.19
 RUN apk add --no-cache ca-certificates tzdata
 
 COPY --from=builder /app/neokit /neokit
-COPY --from=builder /app/static /static
+COPY --from=builder /app/public /public
 
 EXPOSE 8080
 
